@@ -380,6 +380,6 @@ button.addEventListener('click', async() => {
   let response = await axios.get('http://localhost:3001/employees')
   let responseEmployeeName = response.data.filter(data => data.Employee_Name.includes(searchInput))
   console.log(responseEmployeeName)
-  //let searchResult = responseEmployeeName.Employee_Name
-  employeeName.innerText = JSON.stringify(responseEmployeeName)
+  let searchResult = responseEmployeeName.map(x => x.Employee_Name)
+  employeeName.innerText = `${searchResult}`
 })
