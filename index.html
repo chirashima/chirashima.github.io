@@ -8,6 +8,7 @@
     <link href="styles.css" rel="stylesheet" />
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script defer src="script.js"></script>
 </head>
 <body>
@@ -17,7 +18,7 @@
     <main>
         <div class = "container">
             <div class="filters">
-                <h1>Dashboard Filters</h1>
+                <h1>Select Department</h1>
                 <label for="departmentFilter">Department:</label>
                 <select id="departmentFilter">
                     <option value="all">All</option>
@@ -35,11 +36,22 @@
                 <h2 id="totalSalaryExpense"></h2>
                 <h2 id="employeeName1"></h2>
             </div>
-            <div class="positionStatus">
+            
                 <h1>Performance Status</h1>
-                <canvas id="myChart"></canvas>
-            </div>
+                <center><div id = 'myChart'></div></center>
+                
+            <br>
+
+                <h1>Reasons for Voluntary Separation</h1>
+                <center><div id="myPieChart"></div></center>
         </div>
+        <div><h1>Employee Lookup</h1>
+        <label for="employeeSearch">Search employee by name:</label>
+    <input type="text" id="textInput" placeholder="enter name here">
+<button id="submitButton">Search</button></div>
+<div class = "results-container">
+    <h3 id="employeeName"></h3>
+</div>
     </main>
 </body>
 <script>

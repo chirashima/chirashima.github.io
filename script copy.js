@@ -9,12 +9,55 @@ let totalEmployees = document.querySelector('#totalEmployees')
 
 let totalSalaryExpense = document.querySelector('#totalSalaryExpense')
 
-const config = {
-  displayModeBar: false
+
+
+let exceedsCount = 0
+let fullyMeetsCount = 0
+let needsImprovementCount = 0
+let pipCount = 0
+
+let xValues = ['Exceeds', 'Fully Meets', 'Needs Improvement', 'PIP']
+let yValues = [exceedsCount, fullyMeetsCount, needsImprovementCount, pipCount]
+let barColors = ['blue', 'green', 'yellow', 'red']
+
+function xValuesUpdate (newValues) {
+  xValues = newValues
 }
 
+function yValuesUpdate (newValues) {
+  yValues = newValues
+}
 
+function addData(chart, label, data) {
+  chart.data.labels.push(label);
+  chart.data.datasets.forEach((dataset) => {
+      dataset.data.push(data);
+  });
+  chart.update();
+}
 
+function removeData(chart) {
+  chart.data.labels.pop();
+  chart.data.datasets.forEach((dataset) => {
+      dataset.data.pop();
+  });
+  chart.update();
+}
+
+new Chart('myChart', {
+  type: 'bar',
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {display: false}
+  }
+})
 
 // Preload all the data using an axios call
 function getData() {
@@ -36,42 +79,42 @@ function getData() {
     //const data = response.data
 
     // code to construct the bar chart
-    let exceedsCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Exceeds').length
-    console.log(exceedsCount)
-    let fullyMeetsCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Fully Meets').length
-    console.log(fullyMeetsCount)
-    let needsImprovementCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Needs Improvement').length
-    console.log(needsImprovementCount)
-    let pipCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'PIP').length
-    console.log(pipCount)
+    exceedsCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Exceeds').length
+    
+    fullyMeetsCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Fully Meets').length
+    
+    needsImprovementCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Needs Improvement').length
+    
+    pipCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'PIP').length
 
 // GRAPH STUFF STARTS
 let xValues = ['Exceeds', 'Fully Meets', 'Needs Improvement', 'PIP']
 let yValues = [exceedsCount, fullyMeetsCount, needsImprovementCount, pipCount]
 let barColors = ['blue', 'green', 'yellow', 'red']
 
+resetCanvas()
 
-var trace1 = {
-  x: xValues,
-  y: yValues,
-  type: 'bar'
-}
+myChart && myChart.destroy()
 
-var data = [trace1];
-
-var layout = {
-  width: 700,
-  height: 300,
-  margin: {
-    l: 40,
-    r: 40,
-    b: 40,
-    t: 20,
-    pad: 0
+new Chart('myChart', {
+  type: 'bar',
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {display: false}
   }
-}
+})
 
-Plotly.newPlot('myChart', data, layout, config);
+var ctxLine = document.getElementById("myChart").getContext("2d");
+if(window.bar != undefined) 
+window.bar.destroy(); 
+window.bar = new Chart(ctxLine, {});
 
 // GRAPH STUFF ENDS
 
@@ -96,25 +139,21 @@ let yValuesPie = [anotherPositionCount, attendanceCount, careerChangeCount, hour
 let barColorsPie = ['#1170aa', '#fc7d0b', '#a3acb9', '#57606c', '#5fa2ce', '#c85200', '#7b848f', '#a3cce9', '#ffbc79', '#c8d0d9', '#ff9da7', '#edc948']
 
 
-var pieData = [{
-  values: yValuesPie,
-  labels: xValuesPie,
-  type: 'pie'
-}];
-
-var pieLayout = {
-  width: 700,
-  height: 400,
-  margin: {
-    l: 40,
-    r: 40,
-    b: 40,
-    t: 20,
-    pad: 0
+new Chart("myPie", {
+  type: "pie",
+  data: {
+    labels: xValuesPie,
+    datasets: [{
+      backgroundColor: barColorsPie,
+      data: yValuesPie
+    }]
+  },
+  options: {
+    title: {
+      display: false,
+    }
   }
-}
-
-Plotly.newPlot('myPieChart', pieData, pieLayout, config);
+});
 
 // PIE STUFF ENDS
 
@@ -147,7 +186,7 @@ totalEmployees.innerText = 'Total Active Employees: ' + response.data.filter(dat
 
 totalSalaryExpense.innerText = 'Total Salary Expense: ' + totalSalaryCalc.toLocaleString('en-US', {style: 'currency', currency: 'USD'})
 
-
+// GRAPH STUFF STARTS
 
     // code to construct the bar chart
     let exceedsCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Exceeds').length
@@ -166,32 +205,49 @@ let xValues = ['Exceeds', 'Fully Meets', 'Needs Improvement', 'PIP']
 let yValues = [exceedsCount, fullyMeetsCount, needsImprovementCount, pipCount]
 let barColors = ['blue', 'green', 'yellow', 'red']
 
-var trace1 = {
-  x: xValues,
-  y: yValues,
-  type: 'bar'
-}
+resetCanvas()
 
-var data = [trace1];
+myChart && myChart.destroy()
 
-var layout = {
-  width: 700,
-  height: 300,
-  margin: {
-    l: 40,
-    r: 40,
-    b: 40,
-    t: 20,
-    pad: 0
+new Chart('myChart', {
+  type: 'bar',
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {display: false}
   }
-}
+})
+
+var ctxLine = document.getElementById("myChart").getContext("2d");
+if(window.bar != undefined) 
+window.bar.destroy(); 
+window.bar = new Chart(ctxLine, {});
+
+// GRAPH STUFF ENDS
 
 
-Plotly.react('myChart', data, layout);
+//    new Chart('myChart', {
+//      type: 'bar',
+//      data: {
+//        labels: xValues,
+//        datasets: [{
+//          backgroundColor: barColors,
+//          data: yValues
+//        }]
+//      },
+//      options: {
+//        legend: {display: false},
+//        title: {display: false}
+//      }
+//    })
 
-
-
-
+// GRAPH STUFF ENDS
 
 // PIE STUFF STARTS
 // code to filter data by termination reasons
@@ -214,27 +270,21 @@ let yValuesPie = [anotherPositionCount, attendanceCount, careerChangeCount, hour
 let barColorsPie = ['#1170aa', '#fc7d0b', '#a3acb9', '#57606c', '#5fa2ce', '#c85200', '#7b848f', '#a3cce9', '#ffbc79', '#c8d0d9', '#ff9da7', '#edc948']
 
 
-var pieData = [{
-  values: yValuesPie,
-  labels: xValuesPie,
-  type: 'pie'
-}];
-
-var pieLayout = {
-  width: 700,
-  height: 400,
-  margin: {
-    l: 40,
-    r: 40,
-    b: 40,
-    t: 20,
-    pad: 0
+new Chart("myPie", {
+  type: "pie",
+  data: {
+    labels: xValuesPie,
+    datasets: [{
+      backgroundColor: barColorsPie,
+      data: yValuesPie
+    }]
   },
-  textposition: 'inside'
-}
-
-Plotly.react('myPieChart', pieData, pieLayout);
-
+  options: {
+    title: {
+      display: false,
+    }
+  }
+});
 
 // PIE STUFF ENDS
 
@@ -264,47 +314,33 @@ else if(selectedDepartment != 'all'){
 
 
 // GRAPH STUFF STARTS
-
-
-    // code to construct the bar chart
-    let exceedsCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Exceeds' && data.Department == selectedDepartment).length
-    console.log(exceedsCount)
-    let fullyMeetsCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Fully Meets' && data.Department == selectedDepartment).length
-    console.log(fullyMeetsCount)
-    let needsImprovementCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Needs Improvement' && data.Department == selectedDepartment).length
-    console.log(needsImprovementCount)
-    let pipCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'PIP' && data.Department == selectedDepartment).length
-    console.log(pipCount)
-
-
-
 let xValues = ['Exceeds', 'Fully Meets', 'Needs Improvement', 'PIP']
 let yValues = [exceedsCount, fullyMeetsCount, needsImprovementCount, pipCount]
 let barColors = ['blue', 'green', 'yellow', 'red']
 
-var trace1 = {
-  x: xValues,
-  y: yValues,
-  type: 'bar'
-}
+resetCanvas()
 
-var data = [trace1];
+myChart && myChart.destroy()
 
-var layout = {
-  width: 700,
-  height: 300,
-  margin: {
-    l: 40,
-    r: 40,
-    b: 40,
-    t: 20,
-    pad: 0
+new Chart('myChart', {
+  type: 'bar',
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {display: false}
   }
-}
+})
 
-
-Plotly.react('myChart', data, layout);
-
+var ctxLine = document.getElementById("myChart").getContext("2d");
+if(window.bar != undefined) 
+window.bar.destroy(); 
+window.bar = new Chart(ctxLine, {});
 
 // GRAPH STUFF ENDS
 
@@ -337,26 +373,22 @@ let xValuesPie = ['Another Position', 'Attendance', 'Career Change', 'Hours', 'M
 let yValuesPie = [anotherPositionCount, attendanceCount, careerChangeCount, hoursCount, maternityCount, medicalCount, militaryCount, moreMoneyCount, relocationCount, retiringCount, schoolCount, unhappyCount]
 let barColorsPie = ['#1170aa', '#fc7d0b', '#a3acb9', '#57606c', '#5fa2ce', '#c85200', '#7b848f', '#a3cce9', '#ffbc79', '#c8d0d9', '#ff9da7', '#edc948']
 
-var pieData = [{
-  values: yValuesPie,
-  labels: xValuesPie,
-  type: 'pie'
-}];
 
-var pieLayout = {
-  width: 700,
-  height: 400,
-  margin: {
-    l: 40,
-    r: 40,
-    b: 40,
-    t: 20,
-    pad: 0
+new Chart("myPie", {
+  type: "pie",
+  data: {
+    labels: xValuesPie,
+    datasets: [{
+      backgroundColor: barColorsPie,
+      data: yValuesPie
+    }]
   },
-  textposition: 'inside'
-}
-
-Plotly.react('myPieChart', pieData, pieLayout);
+  options: {
+    title: {
+      display: false,
+    }
+  }
+});
 
 // PIE STUFF ENDS
 
@@ -368,18 +400,11 @@ Plotly.react('myPieChart', pieData, pieLayout);
 })
 
 
-// Employee search stuff
+console.log(myChart.data.datasets.data)
 
-const button = document.querySelector('button')
-const input = document.querySelector('input')
-
-const employeeName = document.getElementById('employeeName')
-
-button.addEventListener('click', async() => {
-  let searchInput = input.value
-  let response = await axios.get('http://localhost:3001/employees')
-  let responseEmployeeName = response.data.filter(data => data.Employee_Name.includes(searchInput))
-  console.log(responseEmployeeName)
-  //let searchResult = responseEmployeeName.Employee_Name
-  employeeName.innerText = JSON.stringify(responseEmployeeName)
-})
+function resetCanvas (){
+  $("canvas").remove();
+  $("#positionStatus").append('<canvas id="myChart"><canvas>');
+  canvas = document.querySelector("#myChart");
+  ctx = canvas.getContext("2d");
+}

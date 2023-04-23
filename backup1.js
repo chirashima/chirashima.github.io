@@ -9,9 +9,23 @@ let totalEmployees = document.querySelector('#totalEmployees')
 
 let totalSalaryExpense = document.querySelector('#totalSalaryExpense')
 
-const config = {
-  displayModeBar: false
+
+function addData(chart, label, data) {
+  chart.data.labels.push(label);
+  chart.data.datasets.forEach((dataset) => {
+      dataset.data.push(data);
+  });
+  chart.update();
 }
+
+function removeData(chart) {
+  chart.data.labels.pop();
+  chart.data.datasets.forEach((dataset) => {
+      dataset.data.pop();
+  });
+  chart.update();
+}
+
 
 
 
@@ -46,32 +60,27 @@ function getData() {
     console.log(pipCount)
 
 // GRAPH STUFF STARTS
+
 let xValues = ['Exceeds', 'Fully Meets', 'Needs Improvement', 'PIP']
 let yValues = [exceedsCount, fullyMeetsCount, needsImprovementCount, pipCount]
 let barColors = ['blue', 'green', 'yellow', 'red']
 
-
-var trace1 = {
-  x: xValues,
-  y: yValues,
-  type: 'bar'
-}
-
-var data = [trace1];
-
-var layout = {
-  width: 700,
-  height: 300,
-  margin: {
-    l: 40,
-    r: 40,
-    b: 40,
-    t: 20,
-    pad: 0
+new Chart('myChart', {
+  type: 'bar',
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    title: {display: false}
   }
-}
+})
 
-Plotly.newPlot('myChart', data, layout, config);
+
 
 // GRAPH STUFF ENDS
 
@@ -96,33 +105,30 @@ let yValuesPie = [anotherPositionCount, attendanceCount, careerChangeCount, hour
 let barColorsPie = ['#1170aa', '#fc7d0b', '#a3acb9', '#57606c', '#5fa2ce', '#c85200', '#7b848f', '#a3cce9', '#ffbc79', '#c8d0d9', '#ff9da7', '#edc948']
 
 
-var pieData = [{
-  values: yValuesPie,
-  labels: xValuesPie,
-  type: 'pie'
-}];
-
-var pieLayout = {
-  width: 700,
-  height: 400,
-  margin: {
-    l: 40,
-    r: 40,
-    b: 40,
-    t: 20,
-    pad: 0
+new Chart("myPie", {
+  type: "pie",
+  data: {
+    labels: xValuesPie,
+    datasets: [{
+      backgroundColor: barColorsPie,
+      data: yValuesPie
+    }]
+  },
+  options: {
+    title: {
+      display: false,
+    }
   }
-}
-
-Plotly.newPlot('myPieChart', pieData, pieLayout, config);
+});
 
 // PIE STUFF ENDS
 
     })
-
+    .catch(function (error) {
+      // Handle any errors here
+      console.error(error);
+    });
 }
-
-
 
 
 
@@ -140,58 +146,54 @@ if(selectedDepartment == 'all') {
     }
     return acc
 }, 0)
-
+console.log(totalSalaryCalc)
 
 // EmployementStatus == "Active"
 totalEmployees.innerText = 'Total Active Employees: ' + response.data.filter(data => data.EmploymentStatus == 'Active').length
 
 totalSalaryExpense.innerText = 'Total Salary Expense: ' + totalSalaryCalc.toLocaleString('en-US', {style: 'currency', currency: 'USD'})
 
-
+// GRAPH STUFF STARTS
 
     // code to construct the bar chart
     let exceedsCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Exceeds').length
-    
+    console.log(exceedsCount)
     let fullyMeetsCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Fully Meets').length
-    
+    console.log(fullyMeetsCount)
     let needsImprovementCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Needs Improvement').length
-    
+    console.log(needsImprovementCount)
     let pipCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'PIP').length
-    
+    console.log(pipCount)
+
+    let xValues = ['Exceeds', 'Fully Meets', 'Needs Improvement', 'PIP']
+    let yValues = [exceedsCount, fullyMeetsCount, needsImprovementCount, pipCount]
+    let barColors = ['blue', 'green', 'yellow', 'red']
 
 
 
-// GRAPH STUFF STARTS
-let xValues = ['Exceeds', 'Fully Meets', 'Needs Improvement', 'PIP']
-let yValues = [exceedsCount, fullyMeetsCount, needsImprovementCount, pipCount]
-let barColors = ['blue', 'green', 'yellow', 'red']
-
-var trace1 = {
-  x: xValues,
-  y: yValues,
-  type: 'bar'
-}
-
-var data = [trace1];
-
-var layout = {
-  width: 700,
-  height: 300,
-  margin: {
-    l: 40,
-    r: 40,
-    b: 40,
-    t: 20,
-    pad: 0
-  }
-}
-
-
-Plotly.react('myChart', data, layout);
+    addData(myChart, xValues, yValues)
+    removeData(myChart)
 
 
 
 
+
+//    new Chart('myChart', {
+//      type: 'bar',
+//      data: {
+//        labels: xValues,
+//        datasets: [{
+//          backgroundColor: barColors,
+//          data: yValues
+//        }]
+//      },
+//      options: {
+//        legend: {display: false},
+//        title: {display: false}
+//      }
+//    })
+
+// GRAPH STUFF ENDS
 
 // PIE STUFF STARTS
 // code to filter data by termination reasons
@@ -214,27 +216,21 @@ let yValuesPie = [anotherPositionCount, attendanceCount, careerChangeCount, hour
 let barColorsPie = ['#1170aa', '#fc7d0b', '#a3acb9', '#57606c', '#5fa2ce', '#c85200', '#7b848f', '#a3cce9', '#ffbc79', '#c8d0d9', '#ff9da7', '#edc948']
 
 
-var pieData = [{
-  values: yValuesPie,
-  labels: xValuesPie,
-  type: 'pie'
-}];
-
-var pieLayout = {
-  width: 700,
-  height: 400,
-  margin: {
-    l: 40,
-    r: 40,
-    b: 40,
-    t: 20,
-    pad: 0
+new Chart("myPie", {
+  type: "pie",
+  data: {
+    labels: xValuesPie,
+    datasets: [{
+      backgroundColor: barColorsPie,
+      data: yValuesPie
+    }]
   },
-  textposition: 'inside'
-}
-
-Plotly.react('myPieChart', pieData, pieLayout);
-
+  options: {
+    title: {
+      display: false,
+    }
+  }
+});
 
 // PIE STUFF ENDS
 
@@ -262,9 +258,7 @@ else if(selectedDepartment != 'all'){
 
     totalSalaryExpense.innerText = 'Total Salary Expense: ' + totalSalaryCalc.toLocaleString('en-US', {style: 'currency', currency: 'USD'})
 
-
 // GRAPH STUFF STARTS
-
 
     // code to construct the bar chart
     let exceedsCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'Exceeds' && data.Department == selectedDepartment).length
@@ -276,38 +270,15 @@ else if(selectedDepartment != 'all'){
     let pipCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'PIP' && data.Department == selectedDepartment).length
     console.log(pipCount)
 
-
-
-let xValues = ['Exceeds', 'Fully Meets', 'Needs Improvement', 'PIP']
-let yValues = [exceedsCount, fullyMeetsCount, needsImprovementCount, pipCount]
-let barColors = ['blue', 'green', 'yellow', 'red']
-
-var trace1 = {
-  x: xValues,
-  y: yValues,
-  type: 'bar'
-}
-
-var data = [trace1];
-
-var layout = {
-  width: 700,
-  height: 300,
-  margin: {
-    l: 40,
-    r: 40,
-    b: 40,
-    t: 20,
-    pad: 0
-  }
-}
-
-
-Plotly.react('myChart', data, layout);
-
+    let xValues = ['Exceeds', 'Fully Meets', 'Needs Improvement', 'PIP']
+    let yValues = [exceedsCount, fullyMeetsCount, needsImprovementCount, pipCount]
+    let barColors = ['blue', 'green', 'yellow', 'red']
+    
+    addData(myChart, xValues, yValues)
+    console.log(myChart.data)
+    removeData(myChart)
 
 // GRAPH STUFF ENDS
-
 
 // PIE STUFF STARTS
 // code to filter data by termination reasons
@@ -331,32 +302,28 @@ let unhappyCount = response.data.filter(data => data.EmploymentStatus == 'Volunt
 //let pipCount = response.data.filter(data => data.EmploymentStatus == 'Active' && data.PerformanceScore == 'PIP').length
 //console.log(pipCount)
 
-
+// GRAPH STUFF STARTS
 
 let xValuesPie = ['Another Position', 'Attendance', 'Career Change', 'Hours', 'Maternity Leave - Did Not Return', 'Medical Issues', 'Military', 'Pay', 'Relocation Out of Area', 'Retiring', 'Return to School', 'Unhappy']
 let yValuesPie = [anotherPositionCount, attendanceCount, careerChangeCount, hoursCount, maternityCount, medicalCount, militaryCount, moreMoneyCount, relocationCount, retiringCount, schoolCount, unhappyCount]
 let barColorsPie = ['#1170aa', '#fc7d0b', '#a3acb9', '#57606c', '#5fa2ce', '#c85200', '#7b848f', '#a3cce9', '#ffbc79', '#c8d0d9', '#ff9da7', '#edc948']
 
-var pieData = [{
-  values: yValuesPie,
-  labels: xValuesPie,
-  type: 'pie'
-}];
 
-var pieLayout = {
-  width: 700,
-  height: 400,
-  margin: {
-    l: 40,
-    r: 40,
-    b: 40,
-    t: 20,
-    pad: 0
+new Chart("myPie", {
+  type: "pie",
+  data: {
+    labels: xValuesPie,
+    datasets: [{
+      backgroundColor: barColorsPie,
+      data: yValuesPie
+    }]
   },
-  textposition: 'inside'
-}
-
-Plotly.react('myPieChart', pieData, pieLayout);
+  options: {
+    title: {
+      display: false,
+    }
+  }
+});
 
 // PIE STUFF ENDS
 
@@ -367,19 +334,3 @@ Plotly.react('myPieChart', pieData, pieLayout);
 }
 })
 
-
-// Employee search stuff
-
-const button = document.querySelector('button')
-const input = document.querySelector('input')
-
-const employeeName = document.getElementById('employeeName')
-
-button.addEventListener('click', async() => {
-  let searchInput = input.value
-  let response = await axios.get('http://localhost:3001/employees')
-  let responseEmployeeName = response.data.filter(data => data.Employee_Name.includes(searchInput))
-  console.log(responseEmployeeName)
-  //let searchResult = responseEmployeeName.Employee_Name
-  employeeName.innerText = JSON.stringify(responseEmployeeName)
-})
