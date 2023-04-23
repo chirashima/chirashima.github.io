@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workforce Planning Dashboard</title>
+    <link href="styles.css" rel="stylesheet" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <div class="info">
+        <p>Select filters below to show Total Active (i.e., not terminated) employees, corresponding total salary expense, and performance rating status.</p>
+    </div>
+    <main>
+        <div class = "container">
+            <div class="filters">
+                <h1>Dashboard Filters</h1>
+                <label for="departmentFilter">Department:</label>
+                <select id="departmentFilter">
+                    <option value="all">All</option>
+                    <option value="Admin Offices">Admin Offices</option>
+                    <option value="Executive Office">Executive Office</option>
+                    <option value="IT/IS">IT/IS</option>
+                    <option value="Production       ">Production</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Software Engineering">Software Engineering</option>
+                </select>
+            </div>
+            <div class="metrics">
+                <h1>Summary Metrics</h1>
+                <h2 id="totalEmployees"></h2>
+                <h2 id="totalSalaryExpense"></h2>
+                <h2 id="employeeName1"></h2>
+            </div>
+            <div class="positionStatus">
+                <h1>Performance Status</h1>
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </main>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      getData();
+    });
+  </script>
+</html>
