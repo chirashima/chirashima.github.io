@@ -336,20 +336,82 @@ const employmentStatus = document.getElementById('employmentStatus')
 const terminationReason = document.getElementById('terminationReason')
 const departmentStatus = document.getElementById('departmentStatus')
 
+const container = document.getElementById('table-container');
+
+// This code will let the user search by hitting the Enter key instead of having to click
+input.addEventListener('keypress', function onEvent(event) {
+  if (event.key === 'Enter') {
+      document.getElementById('submitButton').click()
+  }
+})
+
 button.addEventListener('click', async() => {
   // using the .toLowerCase method on input value, so the user doesn't have to capitalize properly
   let searchInput = input.value.toLowerCase()
   let response = await axios.get('http://localhost:3001/employees')
   // using the .toLowerCase method on the response data, treating capitalized names as all lower case for search purposes
   let responseEmployeeName = response.data.filter(data => data.Employee_Name.toLowerCase().includes(searchInput))
-  console.log(responseEmployeeName)
-  let nameSearchResult = responseEmployeeName.map(x => x.Employee_Name)
-  let statusSearchResult = responseEmployeeName.map(x => x.EmploymentStatus)
-  let departmentSearchResult = responseEmployeeName.map(x => x.Department)
-  let terminationSearchResult = responseEmployeeName.map(x => x.TermReason)
-  console.log(departmentSearchResult)
-  employeeName.innerText = `Name: ${nameSearchResult}`
-  employmentStatus.innerText = `Status: ${statusSearchResult}`
-  departmentStatus.innerText = `Department: ${departmentSearchResult}`
-  terminationReason.innerText = `Termination Reason: ${terminationSearchResult}`
+ 
+
+
+// This function will create a table using the JSON response, and overwrite the table if a table already exists
+  function createTable(jsonData, replace = false) {
+  
+    // remove old table if replace is true
+    if (replace) {
+      const oldTable = container.querySelector('table');
+      if (oldTable) {
+        container.removeChild(oldTable);
+      }
+    }
+  
+    // create table element
+    const table = document.createElement('table');
+  
+    // create table header
+    const headerRow = table.insertRow();
+    const headers = Object.keys(jsonData[0]);
+    headers.forEach(header => {
+      const th = document.createElement('th');
+      th.innerText = header;
+      headerRow.appendChild(th);
+    });
+  
+    // create table body
+    jsonData.forEach(rowData => {
+      const row = table.insertRow();
+      headers.forEach(header => {
+        const cell = row.insertCell();
+        cell.innerText = rowData[header];
+      });
+    });
+  
+    // append table to container
+    if (replace) {
+      container.appendChild(table);
+    } else {
+      container.insertBefore(table, container.firstChild);
+    }
+  }
+
+  // this function will handle an empty search result with "No search results found". Otherwise it would return all the records in a huge table
+  function handleSearch(searchInput) {
+    container.innerHTML = ''
+
+    if (!searchInput) {
+      const message = document.createElement('p')
+      message.innerText = 'No search results found'
+      container.appendChild(message)
+      return
+    }
+
+    createTable(responseEmployeeName, true)
+
+  }
+
+  handleSearch(searchInput)
+
 })
+
+
+

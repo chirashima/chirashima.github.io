@@ -9,11 +9,13 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script defer src="script.js"></script>
 </head>
 <body>
     <div class="info">
-        <p>Select filters below to show Total Active (i.e., not terminated) employees, corresponding total salary expense, and performance rating status.</p>
+        <p>Search total employees and corresponding salary expense by Department, and view performance status of current Active employees and termination reasons for Inactive.</p>
+        <p>You can also search employee data using a name, to see their records displayed in a table.</p>
     </div>
     <main>
         <div class = "container">
@@ -45,16 +47,12 @@
                 <h1>Reasons for Voluntary Separation</h1>
                 <center><div id="myPieChart"></div></center>
         </div>
+        <br>
         <div><h1>Employee Lookup</h1>
         <center><label for="employeeSearch">Search employee by name:</label>
     <input type="text" id="textInput" placeholder="enter name here">
 <button id="submitButton">Search</button></div>
-<div class = "results-container">
-    <h3 id="employeeName"></h3>
-    <h3 id="departmentStatus"></h3>
-    <h3 id="employmentStatus"></h3>
-    <h3 id="terminationReason"></h3>
-    </div>
+<div id="table-container"></div>
 </div></center>
     </main>
 </body>
